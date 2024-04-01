@@ -1,0 +1,9 @@
+# IDE
+.vscode/
+
+# LLAMA
+llama.cpp/
+llama-2-7b-chat/
+
+# Input files
+*.pdf
