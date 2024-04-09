@@ -1,5 +1,4 @@
-import PyPDF2
-from langchain_core.documents.base import Document
+from langchain_community.document_loaders.pdf import PyMuPDFLoader
 
 
 class PDFExtractor:
@@ -8,12 +7,9 @@ class PDFExtractor:
     @staticmethod
     def extract_text(filepath):
         try:
-            with open(filepath, "rb") as f:
-                # 取得 PDF 檔案內容
-                pdf_reader = PyPDF2.PdfReader(f)
-
-                # 逐頁提取 PDF 檔案內容
-                return [Document(page_content=page.extract_text()) for page in pdf_reader.pages]
+            # 使用 PyMuPDFLoader 讀取與載入 PDF 檔案
+            loader = PyMuPDFLoader(filepath)
+            return loader.load()
         except Exception as e:
             print(f"Extracting text from PDF failed: {e}")
             return None
