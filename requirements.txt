@@ -1,7 +1,11 @@
-ipykernel
-ipywidgets
 langchain
-PyMuPDF
-chromadb
-sentence-transformers
-llama-cpp-python
+langchain-community
+langchain-core
+langchain-openai
+pypdf
+bs4
+requests
+python-dotenv
+faiss-cpu
+flask
+PyPDF2
