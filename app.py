@@ -78,6 +78,8 @@ def upload_pdf():
     if file and allowed_file(file.filename):
         try:
             filename = secure_filename(file.filename)
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.mkdir(UPLOAD_FOLDER)
             path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(path)
             global _pdf_filepath
