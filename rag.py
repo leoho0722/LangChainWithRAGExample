@@ -19,6 +19,8 @@ Question: {question}
 
 
 class RAG():
+    """RAG (Retrieval Augmented Generation) Instance"""
+
     def __init__(
         self,
         texts: str | list[Document],
@@ -47,14 +49,14 @@ class RAG():
             }
         )
 
-        # Define Template
+        # 定義問答 Template
         self.template = template if template else TEMPLATE
         self.prompt = ChatPromptTemplate.from_template(self.template)
 
         # 初始化 OpenAI Model
         self.model = ChatOpenAI(model=model_name)
 
-        # Setup Chain
+        # 設定 LangChain
         self.chain = (
             {"context": self.retriever, "question": RunnablePassthrough()}
             | self.prompt
@@ -63,4 +65,6 @@ class RAG():
         )
 
     def get_answer(self, question):
+        """取得 LLM 的回答"""
+
         return self.chain.invoke(question)

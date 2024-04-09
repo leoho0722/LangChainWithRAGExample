@@ -1,11 +1,11 @@
 import os
 import socket  # 用來抓區網 IP
 
-from flask import Flask, flash, jsonify, redirect, request, url_for
+from flask import Flask, jsonify, redirect, request
 from werkzeug.utils import secure_filename
 
-from apis import api_model
-from pdf import PDFExtractor
+from apis.api_model import AnswerResponse, ErrorResponse, GeneralResponse
+from pdf_extractor import PDFExtractor
 from rag import RAG
 
 UPLOAD_FOLDER = './uploads'
@@ -54,7 +54,7 @@ def rag_qa():
     print(answer)
 
     return jsonify(
-        api_model.AnswerResponse(
+        AnswerResponse(
             answer=answer
         ).to_json()
     )
@@ -82,19 +82,19 @@ def upload_pdf():
             global _pdf_filepath
             _pdf_filepath = path
             return jsonify(
-                api_model.GeneralResponse(
+                GeneralResponse(
                     message=f"Upload Success, File Path: {path}"
                 ).to_json()
             )
         except Exception as e:
             return jsonify(
-                api_model.ErrorResponse(
+                ErrorResponse(
                     message=f"Upload Failed, Error: {str(e)}"
                 ).to_json()
             )
     else:
         return jsonify(
-            api_model.ErrorResponse(
+            ErrorResponse(
                 message="File Type Not Allowed, current only allow pdf file"
             ).to_json()
         )
