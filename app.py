@@ -12,7 +12,8 @@ UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # 設定上傳檔案的資料夾
+app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS  # 設定允許上傳的檔案副檔名
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 設定檔案上限為 100MB
 
 

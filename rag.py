@@ -58,13 +58,11 @@ class RAG():
 
         # 設定 LangChain
         self.chain = (
-            {"context": self.retriever, "question": RunnablePassthrough()}
+            {
+                "context": self.retriever,
+                "question": RunnablePassthrough()
+            }
             | self.prompt
             | self.model
             | StrOutputParser()
         )
-
-    def get_answer(self, question):
-        """取得 LLM 的回答"""
-
-        return self.chain.invoke(question)
