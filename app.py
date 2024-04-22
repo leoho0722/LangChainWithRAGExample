@@ -1,19 +1,17 @@
 import os
-import socket  # 用來抓區網 IP
 
 from flask import Flask, jsonify, redirect, request
 from werkzeug.utils import secure_filename
 
 from apis.api_model import AnswerResponse, ErrorResponse, GeneralResponse
-from pdf_extractor import PDFExtractor
-from rag import RAG
-
-UPLOAD_FOLDER = './uploads'
-ALLOWED_EXTENSIONS = {'pdf'}
+from extractors.pdf_extractor import PDFExtractor
+from llm.rag import RAG
+import utils.config as config
+from utils.files import allowed_file
+from utils.local_ip import get_local_ip
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # 設定上傳檔案的資料夾
-app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS  # 設定允許上傳的檔案副檔名
+app.config['ALLOWED_EXTENSIONS'] = config.ALLOWED_EXTENSIONS  # 設定允許上傳的檔案副檔名
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 設定檔案上限為 100MB
 
 
@@ -31,17 +29,13 @@ def rag_qa():
 
     # 取得使用者傳入的問題
     question = request.json["question"]
+    print("Question: ", question)
 
-    # 讀取 PDF 檔案
-    # 如果有上傳 PDF 檔案，則使用上傳的檔案
-    # 否則使用預設的 PDF 檔案路徑 (driver_book.pdf/駕駛人手冊.pdf)
-    try:
-        pdf_filepath = _pdf_filepath if _pdf_filepath != "" else os.environ["PDF_PATH"]
-    except:
-        pdf_filepath = os.environ["PDF_PATH"]
+    # 讀取資料夾內所有的 PDF 檔案
+    pdf_dir = os.environ["PDF_DIR"]
 
     # 讀取 PDF 檔案內容
-    documents = PDFExtractor.extract_text(pdf_filepath)
+    documents = PDFExtractor.extract_text_from_directory(pdf_dir)
 
     # 將 PDF 內容傳入 RAG 內進行向量化
     rag = RAG(texts=documents)
@@ -52,7 +46,7 @@ def rag_qa():
         print(chunk)
         if chunk != "":
             answer += chunk
-    print(answer)
+    print("Answer: ", answer)
 
     return jsonify(
         AnswerResponse(
@@ -78,12 +72,8 @@ def upload_pdf():
     if file and allowed_file(file.filename):
         try:
             filename = secure_filename(file.filename)
-            if not os.path.exists(UPLOAD_FOLDER):
-                os.mkdir(UPLOAD_FOLDER)
-            path = os.path.join(UPLOAD_FOLDER, filename)
+            path = os.path.join(config.PDF_DIR, filename)
             file.save(path)
-            global _pdf_filepath
-            _pdf_filepath = path
             return jsonify(
                 GeneralResponse(
                     message=f"Upload Success, File Path: {path}"
@@ -103,25 +93,10 @@ def upload_pdf():
         )
 
 
-def allowed_file(filename):
-    """判斷上傳的檔案副檔名是否包含在允許的副檔名清單內"""
-
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def get_local_ip():
-    """取得區網 IP"""
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    ip = s.getsockname()[0]
-    print("IP：{}".format(ip))
-    s.close()
-
-    return ip
-
-
 if __name__ == '__main__':
     ip = get_local_ip()
-    app.run(debug=True, host="{}".format(ip), port=8000)
+    app.run(
+        host="{}".format(ip),
+        port=8000,
+        debug=True
+    )
