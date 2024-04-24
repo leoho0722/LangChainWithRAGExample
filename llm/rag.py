@@ -1,11 +1,12 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
-from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.embeddings import Embeddings
 from langchain_core.documents.base import Document
 from dotenv import load_dotenv
+
+from vector_db.faiss import FaissVectorDB
 
 load_dotenv(override=True)
 
@@ -26,23 +27,19 @@ class RAG():
         texts: str | list[Document],
         model_name: str = "gpt-3.5-turbo",
         template: str = TEMPLATE,
-        embedding_model: Embeddings = None,  # type: ignore
-        top_k: int = 10
+        embedding_model: Embeddings = None,
+        top_k: int = 3
     ):
         self.texts = texts
         self.embedding_model = embedding_model if embedding_model is not None else OpenAIEmbeddings()
 
         # 建立 FAISS VectorDB
-        if isinstance(self.texts, str):
-            self.vector_store = FAISS.from_texts(
-                [self.texts],
-                embedding=self.embedding_model
-            )
-        elif isinstance(self.texts, list):
-            self.vector_store = FAISS.from_documents(
-                self.texts,
-                embedding=self.embedding_model
-            )
+        faiss_vector_db = FaissVectorDB(
+            texts=self.texts,
+            embedding_model=self.embedding_model
+        )
+        faiss_vector_db.save_to_local()
+        self.vector_store = faiss_vector_db.load_from_local()
         self.retriever = self.vector_store.as_retriever(
             search_kwargs={
                 "k": top_k
