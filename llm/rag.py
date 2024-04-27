@@ -1,10 +1,10 @@
+from dotenv import load_dotenv
+from langchain_core.documents.base import Document
+from langchain_core.embeddings import Embeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_core.embeddings import Embeddings
-from langchain_core.documents.base import Document
-from dotenv import load_dotenv
 
 from vector_db.faiss import FaissVectorDB
 
@@ -31,7 +31,10 @@ class RAG():
         top_k: int = 3
     ):
         self.texts = texts
-        self.embedding_model = embedding_model if embedding_model is not None else OpenAIEmbeddings()
+        if embedding_model is not None:
+            self.embedding_model = embedding_model
+        else:
+            self.embedding_model = OpenAIEmbeddings()
 
         # 建立 FAISS VectorDB
         faiss_vector_db = FaissVectorDB(

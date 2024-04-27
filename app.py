@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from apis.api_model import AnswerResponse, ErrorResponse, GeneralResponse
 from extractors.documents import DocumentsExtractor
 from llm.rag import RAG
-import utils.config as config
+from utils import config
 from utils.files import allowed_file
 from utils.local_ip import get_local_ip
 
@@ -32,7 +32,7 @@ def rag_qa():
     print("Question: ", question)
 
     # 讀取資料夾內所有的 PDF 檔案
-    pdf_dir = os.environ["PDF_DIR"]
+    pdf_dir = config.PDF_DIR
 
     # 讀取 PDF 檔案內容
     documents_extractor = DocumentsExtractor()
