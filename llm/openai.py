@@ -1,10 +1,10 @@
+from dotenv import load_dotenv
+from langchain_core.documents.base import Document
+from langchain_core.embeddings import Embeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_core.embeddings import Embeddings
-from langchain_core.documents.base import Document
-from dotenv import load_dotenv
 
 from vector_db.faiss import FaissVectorDB
 

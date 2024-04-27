@@ -1,14 +1,14 @@
 from dotenv import load_dotenv
+from langchain.llms.ollama import Ollama
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_core.documents.base import Document
+from langchain_core.embeddings import Embeddings
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
-from langchain.llms.ollama import Ollama
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_core.embeddings import Embeddings
-from langchain_core.documents.base import Document
-from torch import backends, cuda
 
 from vector_db.faiss import FaissVectorDB
+from utils.device import available_device
 
 load_dotenv(override=True)
 
@@ -21,7 +21,7 @@ Question: {question}
 """
 
 
-class OllamaRAG():
+class OllamaRAG:
     """RAG (Retrieval Augmented Generation) Instance via Ollama"""
 
     def __init__(
@@ -34,14 +34,7 @@ class OllamaRAG():
     ):
         self.texts = texts
 
-        device: str
-        if cuda.is_available():
-            device = "cuda"
-        else:
-            if backends.mps.is_available():
-                device = "mps"
-            else:
-                device = "cpu"
+        device = available_device()
         print(f"Device: {device}")
 
         # 載入 Embedding Model

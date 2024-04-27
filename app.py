@@ -32,7 +32,7 @@ def rag_qa():
     print("Question: ", question)
 
     # 讀取資料夾內所有的 PDF 檔案
-    pdf_dir = os.environ["PDF_DIR"]
+    pdf_dir = config.PDF_DIR
 
     # 讀取 PDF 檔案內容
     documents_extractor = DocumentsExtractor()
