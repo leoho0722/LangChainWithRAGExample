@@ -3,10 +3,10 @@ import os
 from flask import Flask, jsonify, redirect, request
 from werkzeug.utils import secure_filename
 
-from apis.api_model import AnswerResponse, ErrorResponse, GeneralResponse
+from apis.models import AnswerResponse, ErrorResponse, GeneralResponse
 from extractors.documents import DocumentsExtractor
-from llm.rag import RAG
-import utils.config as config
+from llm.ollama import OllamaRAG
+from utils import config
 from utils.files import allowed_file
 from utils.local_ip import get_local_ip
 
@@ -39,11 +39,11 @@ def rag_qa():
     documents = documents_extractor.extract(pdf_dir)
 
     # 將 PDF 內容傳入 RAG 內進行向量化
-    rag = RAG(texts=documents)
+    ollama_rag = OllamaRAG(model_name="llama3:8b", texts=documents)
 
-    # 並使用 LLM OpenAI GPT 3.5 Turbo 取得問題答案
+    # 從 LLM 取得問題答案
     answer = ""
-    for chunk in rag.chain.stream(question):
+    for chunk in ollama_rag.chain.stream(question):
         print(chunk)
         if chunk != "":
             answer += chunk

@@ -9,3 +9,4 @@ python-dotenv
 faiss-cpu
 flask
 pymupdf
+sentence-transformers
