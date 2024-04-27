@@ -4,7 +4,7 @@ from flask import Flask, jsonify, redirect, request
 from werkzeug.utils import secure_filename
 
 from apis.api_model import AnswerResponse, ErrorResponse, GeneralResponse
-from extractors.pdf_extractor import PDFExtractor
+from extractors.documents import DocumentsExtractor
 from llm.rag import RAG
 import utils.config as config
 from utils.files import allowed_file
@@ -35,7 +35,8 @@ def rag_qa():
     pdf_dir = os.environ["PDF_DIR"]
 
     # 讀取 PDF 檔案內容
-    documents = PDFExtractor.extract_text_from_directory(pdf_dir)
+    documents_extractor = DocumentsExtractor()
+    documents = documents_extractor.extract(pdf_dir)
 
     # 將 PDF 內容傳入 RAG 內進行向量化
     rag = RAG(texts=documents)
@@ -55,8 +56,8 @@ def rag_qa():
     )
 
 
-@app.route('/upload/pdf', methods=['POST'])
-def upload_pdf():
+@app.route('/upload/file', methods=['POST'])
+def upload_file():
     # 檢查 Request 是否包含檔案
     if 'file' not in request.files:
         print('No file part')

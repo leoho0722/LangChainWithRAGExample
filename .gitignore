@@ -162,5 +162,5 @@ cython_debug/
 # IDE
 .vscode/
 
-# Uploads
-uploads/
+# Vector DB
+faiss_index/
