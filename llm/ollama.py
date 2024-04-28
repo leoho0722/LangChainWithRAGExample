@@ -7,6 +7,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
+from llm.model import OllamaModelType
 from vector_db.faiss import FaissVectorDB
 from utils.device import available_device
 
@@ -26,7 +27,7 @@ class OllamaRAG:
 
     def __init__(
         self,
-        model_name: str,
+        model_name: OllamaModelType,
         texts: str | list[Document],
         template: str = TEMPLATE,
         embedding_model: Embeddings = None,
@@ -67,7 +68,7 @@ class OllamaRAG:
         self.prompt = ChatPromptTemplate.from_template(self.template)
 
         # 載入 Ollama 內的 LLM
-        self.model = Ollama(model=model_name, num_gpu=1)
+        self.model = Ollama(model=model_name.value, num_gpu=1)
 
         # 設定 LangChain
         self.chain = (

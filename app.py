@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 
 from apis.models import AnswerResponse, ErrorResponse, GeneralResponse
 from extractors.documents import DocumentsExtractor
+from llm.model import OllamaModelType
 from llm.ollama import OllamaRAG
 from utils import config
 from utils.files import allowed_file
@@ -39,7 +40,10 @@ def rag_qa():
     documents = documents_extractor.extract(pdf_dir)
 
     # 將 PDF 內容傳入 RAG 內進行向量化
-    ollama_rag = OllamaRAG(model_name="llama3:8b", texts=documents)
+    ollama_rag = OllamaRAG(
+        model_name=OllamaModelType.PHI3_MINI,
+        texts=documents
+    )
 
     # 從 LLM 取得問題答案
     answer = ""
