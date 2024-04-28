@@ -3,9 +3,9 @@ import os
 from flask import Flask, jsonify, redirect, request
 from werkzeug.utils import secure_filename
 
-from apis.api_model import AnswerResponse, ErrorResponse, GeneralResponse
+from apis.models import AnswerResponse, ErrorResponse, GeneralResponse
 from extractors.documents import DocumentsExtractor
-from llm.rag import RAG
+from llm.openai import RAG
 from utils import config
 from utils.files import allowed_file
 from utils.local_ip import get_local_ip
