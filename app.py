@@ -32,12 +32,12 @@ def rag_qa():
     question = request.json["question"]
     print("Question: ", question)
 
-    # 讀取資料夾內所有的 PDF 檔案
-    pdf_dir = config.PDF_DIR
+    # 讀取資料夾內所有檔案
+    documents_dir = config.DOCUMENTS_DIR
 
     # 讀取 PDF 檔案內容
     documents_extractor = DocumentsExtractor()
-    documents = documents_extractor.extract(pdf_dir)
+    documents = documents_extractor.extract(documents_dir)
 
     # 將 PDF 內容傳入 RAG 內進行向量化
     ollama_rag = OllamaRAG(
