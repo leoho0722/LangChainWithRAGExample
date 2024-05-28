@@ -6,9 +6,11 @@ pypdf==4.2.0
 bs4==0.0.2
 requests==2.31.0
 python-dotenv==1.0.1
-faiss-gpu==1.7.2
+faiss-gpu==1.7.2;platform_system!="Darwin" # Only for Windows/Linux
+faiss-cpu;platform_system=="Darwin" # Only for MacOS
 flask==3.0.3
 pymupdf==1.24.2
-torch==2.3.0
+torch==2.3.0;platform_system!="Darwin" # Only for Windows/Linux
+torch==2.2.2;platform_system=="Darwin" # Only for MacOS
 sentence-transformers==2.7.0
 pip-autoremove==0.10.0
