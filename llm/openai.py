@@ -25,7 +25,7 @@ class RAG():
     def __init__(
         self,
         texts: str | list[Document],
-        model_name: str = "gpt-3.5-turbo",
+        model_name: str = "gpt-4o",
         template: str = TEMPLATE,
         embedding_model: Embeddings = None,
         top_k: int = 3

@@ -41,7 +41,7 @@ def rag_qa():
     # 將 PDF 內容傳入 RAG 內進行向量化
     rag = RAG(texts=documents)
 
-    # 並使用 LLM OpenAI GPT 3.5 Turbo 取得問題答案
+    # 並使用 OpenAI GPT-4o 取得問題答案
     answer = ""
     for chunk in rag.chain.stream(question):
         print(chunk)
